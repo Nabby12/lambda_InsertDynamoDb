@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: This is the Lambda function for inserting records into dynamo-db.
+Transform:
+  - AWS::Serverless-2016-10-31
+Resources:
+  insertDynamoDb:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/index.handler
+      Runtime: nodejs12.x
+      MemorySize: 128
+      Timeout: 100
+      Description: This is the Lambda function for inserting records into dynamo-db.
+      Policies:
+        - AWSLambdaBasicExecutionRole
+      Environment:
+        Variables:
+          DYNAMO_TABLE_NAME: 
+            Ref: DynamoTableName
+          CREDENTIALS: 
+            Ref: Credentials
+          TOKEN: 
+            Ref: Token
+          SPREADSHEET_ID: 
+            Ref: SpreadsheetId
+          SPREADSHEET_NAME: 
+            Ref: SpreadsheetName
+          SPREADSHEET_RANGE: 
+            Ref: SpreadsheetRange
+          SPREADSHEET_JAN_PHRASE_COLUMN: 
+            Ref: SpreadsheetJanPhraseColumn
+          SPREADSHEET_ENG_PHRASE_COLUMN: 
+            Ref: SpreadsheetEngPhraseColumn
+Parameters:
+  DynamoTableName:
+    Type: String
+  Credentials:
+    Type: String
+  Token:
+    Type: String
+  SpreadsheetId:
+    Type: String
+  SpreadsheetName:
+    Type: String
+  SpreadsheetRange:
+    Type: String
+  SPREADSHEET_JAN_PHRASE_COLUMN:
+    Type: String
+  SPREADSHEET_ENG_PHRASE_COLUMN:
+    Type: String
