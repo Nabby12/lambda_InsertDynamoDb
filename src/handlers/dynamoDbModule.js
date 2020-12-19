@@ -33,10 +33,10 @@ async function putDynamo(item) {
     let response;
     await dynamo.put(params).promise().then(() => {
         console.log("putItem succeeded.");
-        response = {'status': 'succeeded'};
+        response = {'isOk': true};
     }).catch(err => {
         console.error("unable to put item. Error JSON:", JSON.stringify(err, null, 2));
-        response = {'status': 'failed'};
+        response = {'isOk': false};
     });
 
     return response;

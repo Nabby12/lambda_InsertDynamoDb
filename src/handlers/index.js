@@ -22,7 +22,11 @@ exports.handler = async () => {
         response = await dynamoDbModule.putDynamo(item);
     }));
 
-    return response;
+    if (response.isOk){
+        return {'status': 'succeeded'};
+    } else {
+        return {'status': 'failed'};
+    }
 }
 
 async function getDiaryIdArray() {
