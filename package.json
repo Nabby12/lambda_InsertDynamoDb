@@ -4,14 +4,20 @@
     "version": "0.0.1",
     "private": true,
     "dependencies": {
+        "as": "^0.4.1",
         "aws-sdk": "^2.783.0",
+        "chai": "^4.2.0",
+        "chai-as-promised": "^7.1.1",
         "dynamodb-doc": "^1.0.0",
-        "googleapis": "^39.2.0"
+        "googleapis": "^39.2.0",
+        "mocha": "^8.2.1",
+        "promised": "^0.2.2",
+        "sinon": "^9.2.2"
     },
     "devDependencies": {
         "jest": "^24.7.1"
     },
     "scripts": {
-        "test": "jest"
+        "test": "mocha __tests__/unit/handlers/test.js"
     }
 }

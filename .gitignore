@@ -2,4 +2,6 @@
 .aws-sam/
 node_modules/
 env.json
+testenv.json
+.env
 *.toml
