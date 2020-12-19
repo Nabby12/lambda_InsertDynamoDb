@@ -6,6 +6,10 @@ const dynamoDbModule = require('./dynamoDbModule.js');
 exports.handler = async () => {  
     let diary_id_array = await getDiaryIdArray();
 
+    if (diary_id_array[0] === -1 && diary_id_array.length === 1) {
+        return {'status': 'db scan failed.'};
+    };
+
     let phrase_array = await googleSheetsModule.getSpreadSheetPhrase();
     let jan_phrase_array = getJanPhraseArray(phrase_array[0]);
     let eng_phrase_array = getEngPhraseArray(phrase_array[1]);
@@ -23,10 +27,10 @@ exports.handler = async () => {
     }));
 
     if (response.isOk){
-        return {'status': 'succeeded'};
+        return {'status': 'put item succeeded.'};
     } else {
-        return {'status': 'failed'};
-    }
+        return {'status': 'put item failed.'};
+    };
 }
 
 async function getDiaryIdArray() {
