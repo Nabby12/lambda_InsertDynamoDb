@@ -11,7 +11,7 @@ const TOKEN = process.env['TOKEN'];
 
 const {google} = require('googleapis');
 
-module.exports.getSpreadSheetPhrase = async () => {
+async function getSpreadSheetPhrase() {
     try{
         const result = await authorize(JSON.parse(CREDENTIALS), getCellsValue);
         console.log('authorize succeeded.');
@@ -64,3 +64,7 @@ async function getCellsValue(auth) {
         return console.log('The API returned an error: ' + err);
     }
 }
+
+module.exports = {
+    getSpreadSheetPhrase
+};
