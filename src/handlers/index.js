@@ -35,8 +35,11 @@ exports.handler = async () => {
             console.log("putItem succeeded.");
         }).catch(err => {
             console.error("unable to put item. Error JSON:", JSON.stringify(err, null, 2));
+            return;
         });
     }));
+
+    return {'status': 'succeeded'};
 }
 
 async function getDiaryIdArray() {
