@@ -27,7 +27,7 @@ describe('Test for index', () => {
         getSpreadSheetPhraseStub.restore();
     });
     
-    it('DynamoDBにデータ追加できた場合に正常終了のステータスが返る', async () => { 
+    it('DynamoDBにデータ追加できた場合に書込成功ステータスが返る', async () => { 
         getSpreadSheetPhraseStub.returns(Promise.resolve([
             'テストデータ',
             'test data'
@@ -43,7 +43,7 @@ describe('Test for index', () => {
         });
     });
 
-    it('DynamoDBにデータ追加できなかった場合に失敗ステータスが返る', async () => {        
+    it('DynamoDBにデータ追加できなかった場合に書込失敗ステータスが返る', async () => {        
         getSpreadSheetPhraseStub.returns(Promise.resolve([
             'テストデータ',
             'test data'
@@ -59,7 +59,7 @@ describe('Test for index', () => {
         });
     });
 
-    it('DynamoDBのレコード数が取得できない場合に失敗ステータスが返る', async () => {        
+    it('DynamoDBのレコード数が取得できない場合にDB読込失敗ステータスが返る', async () => {        
         getSpreadSheetPhraseStub.returns(Promise.resolve([
             'テストデータ',
             'test data'
