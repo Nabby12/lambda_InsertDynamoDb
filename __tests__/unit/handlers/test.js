@@ -5,6 +5,7 @@ const chai = require('chai');
 chai.use(require('chai-as-promised'))
 const assert = chai.assert;
 const expect = chai.expect;
+const proxyquire = require('proxyquire');
 
 const lambda = require('../../../src/handlers/index.js');
 const googleSheetsModule = require('../../../src/handlers/googleSheetsModule');
@@ -20,7 +21,6 @@ describe('Test for index', () => {
         dynamoDBPutStub = sinon.stub(dynamoDbModule, 'putDynamo');
         getSpreadSheetPhraseStub = sinon.stub(googleSheetsModule, 'getSpreadSheetPhrase');
     });
-
     afterEach(function() {
         dynamoDBScanStub.restore();
         dynamoDBPutStub.restore();
@@ -77,19 +77,95 @@ describe('Test for index', () => {
 });
 
 describe('Test for dynamoDbModule', () => {
-    it('レコード数 + 1が返る', async () => { 
-        
+    let proxyDynamoDBModule;
+    let proxyDynamoDBScanStub;
+    let proxyDynamoDBPutStub;
+
+    const proxyDynamoDB = class {
+        scan(params) {
+            return {
+                promise: () => {}
+            }
+        }
+        put(params) {
+            return {
+                promise: () => {}
+            }
+        }
+    };
+    
+    beforeEach(function() {
+        proxyDynamoDBModule = proxyquire('../../../src/handlers/dynamoDbModule', {
+            'aws-sdk': {
+                DynamoDB: {
+                    DocumentClient: proxyDynamoDB
+                }
+            }
+        });
+
+        proxyDynamoDBScanStub = sinon.stub(proxyDynamoDB.prototype, 'scan');
+        proxyDynamoDBPutStub = sinon.stub(proxyDynamoDB.prototype, 'put');
+    });
+    afterEach(function() {
+        proxyDynamoDBScanStub.restore();
+        proxyDynamoDBPutStub.restore();
+    });
+
+    it('読み込みに成功した場合総レコード数が返る', async () => { 
+        const record_count = 5;
+        const scanResult = { 
+            'Count': record_count,
+            'ScannedCount': record_count
+        };
+        proxyDynamoDBScanStub.returns({promise: () => {
+            return Promise.resolve(scanResult);
+        }});
+
+        const expected = record_count;
+        return expect(proxyDynamoDBModule.scanDynamo()).to.be.fulfilled.then(result => {
+            assert.equal(proxyDynamoDBScanStub.calledOnce, true);
+            assert.deepEqual(result, expected);
+        });
     });
     
     it('読み込みに失敗した場合「-1」が返る', async () => { 
-        
+        const record_count = 5;
+        const scanResult = { 
+            'Count': record_count,
+            'ScannedCount': record_count
+        };
+        proxyDynamoDBScanStub.returns({promise: () => {
+            return Promise.reject('error')
+        }});
+
+        const expected = -1;
+        return expect(proxyDynamoDBModule.scanDynamo()).to.be.fulfilled.then(result => {
+            assert.equal(proxyDynamoDBScanStub.calledOnce, true);
+            assert.deepEqual(result, expected);
+        });
     });
     
-    it('書き込みに成功した場合レコードが追加され、成功ステータスが返る', async () => { 
-        
+    it('書き込みに成功した場合は、成功ステータスが返る', async () => { 
+        proxyDynamoDBPutStub.returns({promise: () => {
+            return Promise.resolve();
+        }});
+
+        const expected = {'isOk': true};
+        return expect(proxyDynamoDBModule.putDynamo()).to.be.fulfilled.then(result => {
+            assert.equal(proxyDynamoDBPutStub.calledOnce, true);
+            assert.deepEqual(result, expected);
+        });
     });
 
-    it('書き込みに失敗した場合レコードは変化せず、失敗ステータスが返る', async () => { 
-        
+    it('書き込みに失敗した場合は、失敗ステータスが返る', async () => { 
+        proxyDynamoDBPutStub.returns({promise: () => {
+            return Promise.reject('error')
+        }});
+
+        const expected = {'isOk': false};
+        return expect(proxyDynamoDBModule.putDynamo()).to.be.fulfilled.then(result => {
+            assert.equal(proxyDynamoDBPutStub.calledOnce, true);
+            assert.deepEqual(result, expected);
+        });
     });
 });
