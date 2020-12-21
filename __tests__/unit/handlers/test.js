@@ -71,7 +71,8 @@ describe('Test for index', () => {
         dynamoDBScanStub.returns(Promise.resolve(-1));       
         dynamoDBPutStub.returns(Promise.resolve({'isOk': true}));       
 
-        const expectd = { status: 'db scan failed.' };
+        const expected = { status: 'db scan failed.' };
+        
         return expect(lambda.handler()).to.be.fulfilled.then(result => {
             assert.equal(dynamoDBScanStub.calledOnce, true);
             assert.equal(dynamoDBPutStub.called, false);
