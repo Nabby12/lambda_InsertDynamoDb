@@ -78,8 +78,8 @@ describe('Test for index', () => {
 
 describe('Test for dynamoDbModule', () => {
     let proxyDynamoDBModule;
-    let proxyDynamoDBScanStub;
-    let proxyDynamoDBPutStub;
+    let dynamoDBScanStub;
+    let dynamoDBPutStub;
 
     const proxyDynamoDB = class {
         scan(params) {
@@ -103,12 +103,12 @@ describe('Test for dynamoDbModule', () => {
             }
         });
 
-        proxyDynamoDBScanStub = sinon.stub(proxyDynamoDB.prototype, 'scan');
-        proxyDynamoDBPutStub = sinon.stub(proxyDynamoDB.prototype, 'put');
+        dynamoDBScanStub = sinon.stub(proxyDynamoDB.prototype, 'scan');
+        dynamoDBPutStub = sinon.stub(proxyDynamoDB.prototype, 'put');
     });
     afterEach(function() {
-        proxyDynamoDBScanStub.restore();
-        proxyDynamoDBPutStub.restore();
+        dynamoDBScanStub.restore();
+        dynamoDBPutStub.restore();
     });
 
     it('読み込みに成功した場合総レコード数が返る', async () => { 
@@ -117,13 +117,13 @@ describe('Test for dynamoDbModule', () => {
             'Count': record_count,
             'ScannedCount': record_count
         };
-        proxyDynamoDBScanStub.returns({promise: () => {
+        dynamoDBScanStub.returns({promise: () => {
             return Promise.resolve(scanResult);
         }});
 
         const expected = record_count;
         return expect(proxyDynamoDBModule.scanDynamo()).to.be.fulfilled.then(result => {
-            assert.equal(proxyDynamoDBScanStub.calledOnce, true);
+            assert.equal(dynamoDBScanStub.calledOnce, true);
             assert.deepEqual(result, expected);
         });
     });
@@ -134,37 +134,37 @@ describe('Test for dynamoDbModule', () => {
             'Count': record_count,
             'ScannedCount': record_count
         };
-        proxyDynamoDBScanStub.returns({promise: () => {
+        dynamoDBScanStub.returns({promise: () => {
             return Promise.reject('error')
         }});
 
         const expected = -1;
         return expect(proxyDynamoDBModule.scanDynamo()).to.be.fulfilled.then(result => {
-            assert.equal(proxyDynamoDBScanStub.calledOnce, true);
+            assert.equal(dynamoDBScanStub.calledOnce, true);
             assert.deepEqual(result, expected);
         });
     });
     
     it('書き込みに成功した場合は、成功ステータスが返る', async () => { 
-        proxyDynamoDBPutStub.returns({promise: () => {
+        dynamoDBPutStub.returns({promise: () => {
             return Promise.resolve();
         }});
 
         const expected = {'isOk': true};
         return expect(proxyDynamoDBModule.putDynamo()).to.be.fulfilled.then(result => {
-            assert.equal(proxyDynamoDBPutStub.calledOnce, true);
+            assert.equal(dynamoDBPutStub.calledOnce, true);
             assert.deepEqual(result, expected);
         });
     });
 
     it('書き込みに失敗した場合は、失敗ステータスが返る', async () => { 
-        proxyDynamoDBPutStub.returns({promise: () => {
+        dynamoDBPutStub.returns({promise: () => {
             return Promise.reject('error')
         }});
 
         const expected = {'isOk': false};
         return expect(proxyDynamoDBModule.putDynamo()).to.be.fulfilled.then(result => {
-            assert.equal(proxyDynamoDBPutStub.calledOnce, true);
+            assert.equal(dynamoDBPutStub.calledOnce, true);
             assert.deepEqual(result, expected);
         });
     });
