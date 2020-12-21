@@ -35,11 +35,13 @@ describe('Test for index', () => {
         dynamoDBScanStub.returns(Promise.resolve(1));       
         dynamoDBPutStub.returns(Promise.resolve({'isOk': true}));       
 
+        const expected = { status: 'put item succeeded.' };
+
         return expect(lambda.handler()).to.be.fulfilled.then(result => {
             assert.equal(dynamoDBScanStub.calledOnce, true);
             assert.equal(dynamoDBPutStub.called, true);
             assert.equal(getSpreadSheetPhraseStub.calledOnce, true);
-            assert.deepEqual(result, { status: 'put item succeeded.' });
+            assert.deepEqual(result, expected);
         });
     });
 
@@ -51,11 +53,13 @@ describe('Test for index', () => {
         dynamoDBScanStub.returns(Promise.resolve(1));       
         dynamoDBPutStub.returns(Promise.resolve({'isOk': false}));       
 
+        const expected = { status: 'put item failed.' };
+
         return expect(lambda.handler()).to.be.fulfilled.then(result => {
             assert.equal(dynamoDBScanStub.calledOnce, true);
             assert.equal(dynamoDBPutStub.called, true);
             assert.equal(getSpreadSheetPhraseStub.calledOnce, true);
-            assert.deepEqual(result, { status: 'put item failed.' });
+            assert.deepEqual(result, expected);
         });
     });
 
@@ -67,11 +71,12 @@ describe('Test for index', () => {
         dynamoDBScanStub.returns(Promise.resolve(-1));       
         dynamoDBPutStub.returns(Promise.resolve({'isOk': true}));       
 
+        const expectd = { status: 'db scan failed.' };
         return expect(lambda.handler()).to.be.fulfilled.then(result => {
             assert.equal(dynamoDBScanStub.calledOnce, true);
             assert.equal(dynamoDBPutStub.called, false);
             assert.equal(getSpreadSheetPhraseStub.calledOnce, false);
-            assert.deepEqual(result, { status: 'db scan failed.' });
+            assert.deepEqual(result, expected);
         });
     });
 });
@@ -122,6 +127,7 @@ describe('Test for dynamoDbModule', () => {
         }});
 
         const expected = record_count;
+
         return expect(proxyDynamoDBModule.scanDynamo()).to.be.fulfilled.then(result => {
             assert.equal(dynamoDBScanStub.calledOnce, true);
             assert.deepEqual(result, expected);
@@ -139,6 +145,7 @@ describe('Test for dynamoDbModule', () => {
         }});
 
         const expected = -1;
+
         return expect(proxyDynamoDBModule.scanDynamo()).to.be.fulfilled.then(result => {
             assert.equal(dynamoDBScanStub.calledOnce, true);
             assert.deepEqual(result, expected);
@@ -151,6 +158,7 @@ describe('Test for dynamoDbModule', () => {
         }});
 
         const expected = {'isOk': true};
+
         return expect(proxyDynamoDBModule.putDynamo()).to.be.fulfilled.then(result => {
             assert.equal(dynamoDBPutStub.calledOnce, true);
             assert.deepEqual(result, expected);
@@ -163,6 +171,7 @@ describe('Test for dynamoDbModule', () => {
         }});
 
         const expected = {'isOk': false};
+        
         return expect(proxyDynamoDBModule.putDynamo()).to.be.fulfilled.then(result => {
             assert.equal(dynamoDBPutStub.calledOnce, true);
             assert.deepEqual(result, expected);
