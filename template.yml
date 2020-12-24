@@ -44,7 +44,7 @@ Parameters:
     Type: String
   SpreadsheetRange:
     Type: String
-  SPREADSHEET_JAN_PHRASE_COLUMN:
+  SpreadsheetJanPhraseColumn:
     Type: String
-  SPREADSHEET_ENG_PHRASE_COLUMN:
+  SpreadsheetEngPhraseColumn:
     Type: String
