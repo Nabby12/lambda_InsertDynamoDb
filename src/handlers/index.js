@@ -1,18 +1,42 @@
 'use strict'
 
+const lineModule = require('./lineModule.js');
 const googleSheetsModule = require('./googleSheetsModule.js');
 const dynamoDbModule = require('./dynamoDbModule.js');
 
-exports.handler = async () => {  
-    let diary_id_array = await getDiaryIdArray();
+exports.handler = async (event, context) => {
+    let result;
 
-    if (diary_id_array[0] === -1 && diary_id_array.length === 1) {
-        return {'status': 'db scan failed.'};
+    const authenticationForLine = lineModule.authorize(event);
+    if (!authenticationForLine.isOk) {
+        result = {'status': 'line authentication failed.'};
+        await lineModule.reply(event, context, result.status);
+        return result;
     };
 
-    let phrase_array = await googleSheetsModule.getSpreadSheetPhrase();
-    let jan_phrase_array = getJanPhraseArray(phrase_array[0]);
-    let eng_phrase_array = getEngPhraseArray(phrase_array[1]);
+    const validateText = lineModule.validateText(event);
+    if (!validateText.isMatch) {
+        result = {'status': 'invalid text.'};
+        await lineModule.reply(event, context, result.status);
+        return result;
+    };
+
+    let diary_id_array = await getDiaryIdArray();
+    if (diary_id_array.includes(-1)) {
+        result = {'status': 'db scan failed.'};
+        await lineModule.reply(event, context, result.status);
+        return result;
+    };
+
+    let phraseObject = await googleSheetsModule.getSpreadSheetPhrase();
+    if (!phraseObject.isOk){
+        result = {'status': phraseObject.content};
+        await lineModule.reply(event, context, result.status);
+        return result;
+    };
+
+    let jan_phrase_array = getJanPhraseArray(phraseObject.content[0]);
+    let eng_phrase_array = getEngPhraseArray(phraseObject.content[1]);
 
     let response;
     await Promise.all(diary_id_array.map(async (element, index) => {
@@ -27,10 +51,13 @@ exports.handler = async () => {
     }));
 
     if (response.isOk){
-        return {'status': 'put item succeeded.'};
+        result = {'status': 'put item succeeded.'};
     } else {
-        return {'status': 'put item failed.'};
+        result = {'status': 'put item failed.'};
     };
+
+    await lineModule.reply(event, context, result.status);
+    return result;
 }
 
 async function getDiaryIdArray() {

@@ -17,10 +17,14 @@ Resources:
         Variables:
           DYNAMO_TABLE_NAME: 
             Ref: DynamoTableName
-          CREDENTIALS: 
-            Ref: Credentials
-          TOKEN: 
-            Ref: Token
+          CREDENTIALS_CLIENT_ID: 
+            Ref: CredentialsClientId
+          CREDENTIALS_CLIENT_SECRET: 
+            Ref: CredentialsClientSecret
+          CREDENTIALS_REDIRECT_URI: 
+            Ref: CredentialsRedirectUri
+          REFRESH_TOKEN: 
+            Ref: RefreshToken
           SPREADSHEET_ID: 
             Ref: SpreadsheetId
           SPREADSHEET_NAME: 
@@ -31,12 +35,24 @@ Resources:
             Ref: SpreadsheetJanPhraseColumn
           SPREADSHEET_ENG_PHRASE_COLUMN: 
             Ref: SpreadsheetEngPhraseColumn
+          LINE_CHANNEL_SECRET: 
+            Ref: LineChannelSecret
+          LINE_CHANNEL_ACCESS_TOKEN: 
+            Ref: LineChannelAccessToken
+          LINE_HEADER: 
+            Ref: LineHeader
+          LINE_TRIGGER_WORD: 
+            Ref: LineTriggerWord
 Parameters:
   DynamoTableName:
     Type: String
-  Credentials:
+  CredentialsClientId:
     Type: String
-  Token:
+  CredentialsClientSecret:
+    Type: String
+  CredentialsRedirectUri:
+    Type: String
+  RefreshToken:
     Type: String
   SpreadsheetId:
     Type: String
@@ -47,4 +63,12 @@ Parameters:
   SpreadsheetJanPhraseColumn:
     Type: String
   SpreadsheetEngPhraseColumn:
+    Type: String
+  LineChannelSecret:
+    Type: String
+  LineChannelAccessToken:
+    Type: String
+  LineHeader:
+    Type: String
+  LineTriggerWord:
     Type: String
