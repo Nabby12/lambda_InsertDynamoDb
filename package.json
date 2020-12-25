@@ -4,10 +4,12 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
+    "@line/bot-sdk": "^7.2.0",
     "as": "^0.4.1",
     "aws-sdk": "^2.783.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
+    "crypto": "^1.0.1",
     "dynamodb-doc": "^1.0.0",
     "googleapis": "^39.2.0",
     "mocha": "^8.2.1",
