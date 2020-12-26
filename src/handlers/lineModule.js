@@ -23,9 +23,9 @@ function authorize(event) {
     
     let result;
     if (signature === headerSignature) {
-        result = {'isOk': true };
+        result = { 'isOk': true };
     } else {
-        result = {'isOk': false };
+        result = { 'isOk': false };
     };
     
     return result;
@@ -52,6 +52,7 @@ async function reply(event, context, replyMessage) {
         'text': replyMessage
     };
 
+    let result;
     await CLIENT.replyMessage(eventBody.events[0].replyToken, message).then(response => { 
         let lambdaResponse = {
             statusCode: 200,
@@ -61,10 +62,16 @@ async function reply(event, context, replyMessage) {
         console.log(response);
         console.log('send to line succeeded.');
         context.succeed(lambdaResponse);
+        
+        result = { 'isOk': true };
     }).catch(err =>{
         console.log('send to line failed.');
         console.log(err);
+
+        result = { 'isOk': false };
     });
+
+    return result;
 }
 
 module.exports = {
