@@ -45,30 +45,23 @@ function validateText(event){
     return result;
 }
 
-async function reply(event, context, replyMessage) {
+async function reply(event, replyMessage) {
     const eventBody = JSON.parse(event.body);
     const message = {
         'type': 'text',
         'text': replyMessage
     };
 
-    let result;
-    await CLIENT.replyMessage(eventBody.events[0].replyToken, message).then(response => { 
-        let lambdaResponse = {
-            statusCode: 200,
-            headers: { "X-Line-Status" : "OK"},
-            body: '{"result":"completed"}'
-        };
+    const result = await CLIENT.replyMessage(eventBody.events[0].replyToken, message).then(response => { 
         console.log(response);
         console.log('send to line succeeded.');
-        context.succeed(lambdaResponse);
         
-        result = { 'isOk': true };
+        return { 'isReply': true };
     }).catch(err =>{
         console.log('send to line failed.');
         console.log(err);
 
-        result = { 'isOk': false };
+        return { 'isReply': false };
     });
 
     return result;
