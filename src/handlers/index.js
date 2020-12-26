@@ -7,8 +7,8 @@ const dynamoDbModule = require('./dynamoDbModule.js');
 exports.handler = async (event, context) => {
     let result;
 
-    const authenticationForLine = lineModule.authorize(event);
-    if (!authenticationForLine.isOk) {
+    const lineAuthorize = lineModule.authorize(event);
+    if (!lineAuthorize.isOk) {
         result = {'status': 'line authentication failed.'};
         await lineModule.reply(event, context, result.status);
         return result;
