@@ -9,8 +9,8 @@ exports.handler = async event => {
     let replyStatus;
 
     const lineAuthorize = lineModule.authorize(event);
-    if (!lineAuthorize.isOk) {
-        result = {'status': 'line authentication failed.'};
+    if (!lineAuthorize.isAuthorize) {
+        result = {'status': 'line authorize failed.'};
         replyStatus = await lineModule.reply(event, result.status);
         result.isReply = replyStatus.isReply;
         return result;
