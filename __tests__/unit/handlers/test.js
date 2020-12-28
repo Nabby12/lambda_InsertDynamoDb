@@ -469,9 +469,6 @@ describe('Test for lineModule', () => {
         },
         "body": '{"events": [{"replyToken": "errToken", "message": {"text": "errText"}}]}'
     };
-    // process.env.LINE_HEADER = 'target-header'
-    // process.env.LINE_TRIGGER_WORD = 'dummyText'
-    // process.env.LINE_CHANNEL_SECRET = 'dummyToken'
     beforeEach(() => {
         sandbox = createSandbox();
         sandbox.stub(process, 'env').value({
