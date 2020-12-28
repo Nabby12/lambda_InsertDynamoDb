@@ -4,34 +4,39 @@ const lineModule = require('./lineModule.js');
 const googleSheetsModule = require('./googleSheetsModule.js');
 const dynamoDbModule = require('./dynamoDbModule.js');
 
-exports.handler = async (event, context) => {
+exports.handler = async event => {
     let result;
+    let replyStatus;
 
-    const authenticationForLine = lineModule.authorize(event);
-    if (!authenticationForLine.isOk) {
-        result = {'status': 'line authentication failed.'};
-        await lineModule.reply(event, context, result.status);
+    const lineAuthorize = await lineModule.authorize(event);
+    if (!lineAuthorize.isAuthorize) {
+        result = {'status': 'line authorize failed.'};
+        replyStatus = await lineModule.reply(event, result.status);
+        result.isReply = replyStatus.isReply;
         return result;
     };
 
-    const validateText = lineModule.validateText(event);
+    const validateText = await lineModule.validateText(event);
     if (!validateText.isMatch) {
         result = {'status': 'invalid text.'};
-        await lineModule.reply(event, context, result.status);
+        replyStatus = await lineModule.reply(event, result.status);
+        result.isReply = replyStatus.isReply;
         return result;
     };
 
     let diary_id_array = await getDiaryIdArray();
     if (diary_id_array.includes(-1)) {
         result = {'status': 'db scan failed.'};
-        await lineModule.reply(event, context, result.status);
+        replyStatus = await lineModule.reply(event, result.status);
+        result.isReply = replyStatus.isReply;
         return result;
     };
 
     let phraseObject = await googleSheetsModule.getSpreadSheetPhrase();
     if (!phraseObject.isOk){
         result = {'status': phraseObject.content};
-        await lineModule.reply(event, context, result.status);
+        replyStatus = await lineModule.reply(event, result.status);
+        result.isReply = replyStatus.isReply;
         return result;
     };
 
@@ -56,7 +61,8 @@ exports.handler = async (event, context) => {
         result = {'status': 'put item failed.'};
     };
 
-    await lineModule.reply(event, context, result.status);
+    replyStatus = await lineModule.reply(event, result.status);
+    result.isReply = replyStatus.isReply;
     return result;
 }
 
