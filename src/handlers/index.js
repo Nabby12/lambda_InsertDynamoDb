@@ -8,7 +8,7 @@ exports.handler = async event => {
     let result;
     let replyStatus;
 
-    const lineAuthorize = lineModule.authorize(event);
+    const lineAuthorize = await lineModule.authorize(event);
     if (!lineAuthorize.isAuthorize) {
         result = {'status': 'line authorize failed.'};
         replyStatus = await lineModule.reply(event, result.status);
@@ -16,10 +16,10 @@ exports.handler = async event => {
         return result;
     };
 
-    const validateText = lineModule.validateText(event);
+    const validateText = await lineModule.validateText(event);
     if (!validateText.isMatch) {
         result = {'status': 'invalid text.'};
-        replystatus = await lineModule.reply(event, result.status);
+        replyStatus = await lineModule.reply(event, result.status);
         result.isReply = replyStatus.isReply;
         return result;
     };

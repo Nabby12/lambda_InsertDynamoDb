@@ -8,7 +8,7 @@ const LINE_TRIGGER_WORD = process.env['LINE_TRIGGER_WORD'];
 const LINE = require('@line/bot-sdk');
 const CRYPTO = require('crypto');
 
-function authorize(event) {
+async function authorize(event) {
     let signature;
     try {
         signature = CRYPTO.createHmac('sha256', LINE_CHANNEL_SECRET).update(event.body).digest('base64');
@@ -30,7 +30,7 @@ function authorize(event) {
     return result;
 }
 
-function validateText(event){
+async function validateText(event){
     const eventBody = JSON.parse(event.body);
     const sendText = eventBody.events[0].message.text;
 
