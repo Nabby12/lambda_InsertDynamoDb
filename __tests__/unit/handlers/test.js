@@ -10,7 +10,6 @@ const proxyquire = require('proxyquire');
 const googleSheetsModule = require('../../../src/handlers/googleSheetsModule');
 const dynamoDbModule = require('../../../src/handlers/dynamoDbModule');
 const { createSandbox } = require('sinon');
-const { StepFunctions } = require('aws-sdk');
 
 describe('Test for index', () => {
     let sandbox;
