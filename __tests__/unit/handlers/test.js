@@ -579,17 +579,6 @@ describe('Test for lineModule', () => {
     });
 });
 
-'use strict'
-
-const sinon = require('sinon');
-const chai = require('chai');
-chai.use(require('chai-as-promised'));
-const assert = chai.assert;
-const expect = chai.expect;
-
-const { createSandbox } = require('sinon');
-const {google} = require('googleapis');
-
 describe('Test for googleSheetsModule', () => {
     let sandbox;
     let oAuth2ClientStub;
