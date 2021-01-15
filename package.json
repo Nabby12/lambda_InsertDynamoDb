@@ -21,7 +21,7 @@
     "jest": "^24.7.1"
   },
   "scripts": {
-    "test": "mocha __tests__/unit/handlers/test.js"
+    "test": "mocha __tests__/unit/handlers/"
   },
   "main": "index.js",
   "repository": {

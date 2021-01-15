@@ -14,22 +14,10 @@ const REFRESH_TOKEN = process.env['REFRESH_TOKEN'];
 const {google} = require('googleapis');
 
 async function getSpreadSheetPhrase() {
-    let result;
-    try{
-        let content = await authorize(getCellsValue);
-        result = {
-            'isOk': !(typeof(content) === 'string'),
-            'content': content
-        };
-        console.log('authorize succeeded.');
-    } catch(err) {
-        const errorMessage = 'authorize failed.';
-        result = {
-            'isOk': false,
-            'content': errorMessage
-        };
-        console.log(errorMessage);
-        console.log(err);
+    let content = await authorize(getCellsValue);
+    let result = {
+        'isOk': !(typeof(content) === 'string'),
+        'content': content
     };
 
     return result;
